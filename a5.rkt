@@ -28,8 +28,38 @@
 ; gets the second element in a list
 (define second (lambda (lst) (car (cdr lst))))
 
+; gets third element in list
+(define third (lambda (lst)
+                     (car (cdr (cdr lst)))
+                     ))
 
+; checks if its a symbol and not a reserved symbol
+(define isProperSymbol? (lambda (elem)
+                         (and (symbol? elem) (not (eq? elem 'lmda)))
+                         ))
 
+; checks if the current element is an E
+(define isE? (lambda (elem)
 
+               (cond
+                 ((isProperSymbol? elem) #t)
+                 ((isLmda? elem) #t)
+                 ((and (not (symbol? elem)) (and (> (length elem) 1) (and (isE? (car elem)) (isE? (second elem))))) #t)
+                 (else #f)
+                 )
 
+               ))
 
+; checks if the current element is an e
+(define isLmda? (lambda (elem)
+                  (and
+                  (and
+                   (and
+                    (not (symbol? elem))
+                   (eq? (car elem) 'lmda))
+                   (and (> (length elem) 1) (isProperSymbol? (second elem)))
+                   )
+                  (and (> (length elem) 2) (isE? (third elem))))
+                  ))
+
+(isE? '(lmda x (x x)))
